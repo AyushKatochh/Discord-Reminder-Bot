@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Reminder {
+  id            String      @id @default(uuid())
+  author        String  
+  channel_Id    String
+  title         String
+  description   String?
+  reminder_time DateTime
+  snooze_time   EnumSnoozeTime? @default(NULL)
+  created_at    BigInt @default(dbgenerated("EXTRACT(EPOCH FROM NOW())::bigint"))
+  updated_at    BigInt @default(dbgenerated("EXTRACT(EPOCH FROM NOW())::bigint"))   
+  message_id   String?   
+   sent          Boolean     @default(false)  
+  snoozed       Boolean     @default(false)
+   is_DM        Boolean @default(true)
+    status       EnumStatus      @default(UPCOMING)
+}
+
+enum EnumSnoozeTime { 
+  NULL
+  FIVE_MINUTES
+  FIFTEEN_MINUTES
+}
+
+enum EnumStatus {
+  UPCOMING
+  COMPLETED
+  FAILED
+  SNOOZED
+  SENT
+}
